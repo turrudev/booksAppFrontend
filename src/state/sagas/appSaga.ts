@@ -29,8 +29,20 @@ function* createBook(action: AppActionType): Generator<any, void, Book> {
     }
 }
 
+function* updateBook(action: AppActionType): Generator<any, void, Book> {
+
+    try {
+        const {_id, ...bookDataWithoutId} = action.book!;
+        const book: Book = yield call(getCrudInstance().update, _id!, bookDataWithoutId);
+        if (book) yield put(appCreator.updateBook(book));
+    } catch (e) {
+        Logger.logError(e);
+    }
+}
+
 export function* appSaga() {
     yield takeEvery('*', updateStateLocalStorage);
     yield takeEvery(AppActions.DELETE_BOOK_REQUEST, deleteBook);
     yield takeEvery(AppActions.CREATE_BOOK_REQUEST, createBook);
+    yield takeEvery(AppActions.UPDATE_BOOK_REQUEST, updateBook);
 }

@@ -64,8 +64,23 @@ export default class AppRestService implements CRUD<Book | Author> {
         });
     }
 
-    update(id: string, item: Partial<Book>): Promise<Book | undefined> {
-        return Promise.resolve(undefined);
+    async update(id: string, item: Partial<Book>): Promise<Book | undefined> {
+        try {
+            const response = await fetch(`${BackendAddress}${Endpoints.Books}/${id}`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(item)
+            });
+
+            if (!response.ok) throw new Error('Failed to update book');
+
+            return await response.json();
+        } catch (error) {
+            Logger.logError('Error updating book:', error);
+            throw error;
+        }
     }
 }
 

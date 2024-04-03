@@ -42,13 +42,14 @@ const AppReducer = (state: AppStateType = Storage.getState() || AppInitialState,
                 books: newBooks
             };
         case AppActions.CREATE_BOOK:
-            const newBook: Book = action.book!;
+        case AppActions.UPDATE_BOOK:
+            const book: Book = action.book!;
 
             return {
                 ...state,
                 books: {
                     ...state.books,
-                    [newBook._id]: newBook
+                    [book._id]: book
                 }
             };
         default:

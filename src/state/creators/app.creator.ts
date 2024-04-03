@@ -7,7 +7,9 @@ const setBooks = (books: BooksCollection, ttl: number) => ({type: AppActions.SET
     deleteBookRequest = (bookId: number) => ({type: AppActions.DELETE_BOOK_REQUEST, bookId}),
     deleteBook = (bookId: number) => ({type: AppActions.DELETE_BOOK, bookId}),
     createBookRequest = (book: Book) => ({type: AppActions.CREATE_BOOK_REQUEST, book}),
-    createBook = (book: Book) => ({type: AppActions.CREATE_BOOK, book});
+    createBook = (book: Book) => ({type: AppActions.CREATE_BOOK, book}),
+    updateBookRequest = (book: Book) => ({type: AppActions.UPDATE_BOOK_REQUEST, book}),
+    updateBook = (book: Book) => ({type: AppActions.UPDATE_BOOK, book});
 
 const AppCreator = {
     setBooks,
@@ -15,7 +17,9 @@ const AppCreator = {
     deleteBookRequest,
     deleteBook,
     createBookRequest,
-    createBook
+    createBook,
+    updateBookRequest,
+    updateBook
 };
 
 export default AppCreator;
