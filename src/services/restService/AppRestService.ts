@@ -27,10 +27,24 @@ export default class AppRestService implements CRUD<Book | Author> {
         return "rest";
     }
 
-    create(item: Partial<Book>): Promise<Book> {
-        return new Promise<Book>(resolve => {
-            resolve({_id: "1", authors: [], price: 0, title: ""});
-        });
+
+    async create(item: Partial<Book>): Promise<Book> {
+        try {
+            const response = await fetch(`${BackendAddress}${Endpoints.Books}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(item)
+            });
+
+            if (!response.ok) throw new Error('Failed to create book');
+
+            return await response.json();
+        } catch (error) {
+            Logger.logError('Error creating book:', error);
+            throw error;
+        }
     }
 
     delete(id: string): Promise<boolean> {

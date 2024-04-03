@@ -1,22 +1,25 @@
 import React from 'react';
 import BookForm from "../../components/bookForm/BookForm";
 import Book from "../../models/Book";
+import AppCreator from "../../state/creators/app.creator";
+import {useDispatch} from "react-redux";
 
-interface BookFormProps {
-    onSubmit: Function;
-}
+const CreateBook = () => {
+    const dispatch = useDispatch(),
+        emptyBook: Book = {
+            _id: "",
+            title: "",
+            price: 1,
+            authors: []
+        };
 
-const UpdateBook = ({onSubmit}: BookFormProps) => {
-    const emptyBook: Book = {
-        _id: "",
-        title: "",
-        price: 0,
-        authors: []
-    }
+    const createBook = (book: Book) => {
+        dispatch(AppCreator.createBookRequest(book));
+    };
 
     return (
-        <BookForm onSubmit={onSubmit} book={emptyBook}/>
+        <BookForm onSubmit={createBook} book={emptyBook} createForm={true}/>
     );
 };
 
-export default UpdateBook;
+export default CreateBook;

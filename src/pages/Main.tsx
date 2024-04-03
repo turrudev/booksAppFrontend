@@ -98,7 +98,7 @@ const Main = ({service}: MainProps) => {
                         <Routes>
                             <Route path={RouterPaths.Books} element={<BooksPage/>}/>
                             <Route path={RouterPaths.Book} element={<UpdateBookPage onSubmit={() => void (0)}/>}/>
-                            <Route path={RouterPaths.NewBook} element={<NewBookPage onSubmit={() => void (0)}/>}/>
+                            <Route path={RouterPaths.NewBook} element={<NewBookPage/>}/>
                             <Route path="*" element={<Navigate to={RouterPaths.Books}/>}/>
                         </Routes>
                     </div>

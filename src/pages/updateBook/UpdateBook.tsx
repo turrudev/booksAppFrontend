@@ -17,7 +17,7 @@ const UpdateBook = ({onSubmit}: BookFormProps) => {
     if (!book) window.location.href = RouterPaths.Books;
 
     return (
-        <BookForm onSubmit={onSubmit} book={book}/>
+        <BookForm onSubmit={onSubmit} book={book} createForm={false}/>
     );
 };
 

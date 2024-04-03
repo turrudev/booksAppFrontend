@@ -1,6 +1,6 @@
 import AppInitialState, {AppStateType} from "./appInitialState";
 import AppActions from "../actions/app.actions";
-import {BooksCollection} from "../../models/Book";
+import Book, {BooksCollection} from "../../models/Book";
 import Storage from "../../utils/Storage";
 import {AuthorsCollection} from "../../models/Author";
 
@@ -10,6 +10,7 @@ export interface AppActionType {
     authors?: AuthorsCollection;
     ttl?: number;
     bookId?: number;
+    book?: Book;
 }
 
 const AppReducer = (state: AppStateType = Storage.getState() || AppInitialState, action: AppActionType): AppStateType => {
@@ -39,6 +40,16 @@ const AppReducer = (state: AppStateType = Storage.getState() || AppInitialState,
             return {
                 ...state,
                 books: newBooks
+            };
+        case AppActions.CREATE_BOOK:
+            const newBook: Book = action.book!;
+
+            return {
+                ...state,
+                books: {
+                    ...state.books,
+                    [newBook._id]: newBook
+                }
             };
         default:
             return state;

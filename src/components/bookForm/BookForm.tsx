@@ -1,8 +1,8 @@
-import React, {useContext, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {css, StyleSheet} from 'aphrodite';
 import {useSelector} from "react-redux";
 import {AppStateType} from "../../state/reducers/appInitialState";
-import Book from "../../models/Book";
+import Book, {BooksCollection} from "../../models/Book";
 import {AuthorsCollection} from "../../models/Author";
 import {TranslationsContext} from "../../providers/TranslationProvider";
 import {ThemeContext} from "../../providers/ThemeProvider";
@@ -10,9 +10,10 @@ import {ThemeContext} from "../../providers/ThemeProvider";
 interface BookFormProps {
     onSubmit: Function;
     book: Book;
+    createForm: boolean;
 }
 
-const BookForm = ({onSubmit, book}: BookFormProps) => {
+const BookForm = ({onSubmit, book, createForm}: BookFormProps) => {
     const translations = useContext(TranslationsContext),
         authors: AuthorsCollection = useSelector((state: AppStateType) => state.authors),
         [title, setTitle] = useState(book.title),
@@ -71,14 +72,24 @@ const BookForm = ({onSubmit, book}: BookFormProps) => {
                     backgroundColor: `${theme.bookForm.submitBackgroundHover}`,
                 }
             },
-        });
+        }),
+        books: BooksCollection = useSelector((state: AppStateType) => state.books);
+
+    useEffect(() => {
+        if (createForm && books[isbn]) {
+            setTitle("");
+            setIsbn("");
+            setPrice("");
+            setSelectedAuthors([]);
+        }
+    }, [books, isbn, createForm]);
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
         const bookData = {
             title,
-            isbn,
+            _id: isbn,
             price: parseFloat(price),
             authors: selectedAuthors
         };
@@ -89,7 +100,7 @@ const BookForm = ({onSubmit, book}: BookFormProps) => {
     const handlePriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const newPrice = e.target.value;
 
-        if (!newPrice || parseFloat(newPrice) >= 0) setPrice(newPrice);
+        if (!newPrice || parseFloat(newPrice) > 0) setPrice(newPrice);
     };
 
     const handleIsbnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -114,19 +125,23 @@ const BookForm = ({onSubmit, book}: BookFormProps) => {
                 required
                 aria-label={bookTitle}
             />
-            <label htmlFor="isbn" className={css(styles.label)}>{isbnTranslation}:</label>
-            <input
-                id="isbn"
-                type="text"
-                value={isbn}
-                onChange={handleIsbnChange}
-                className={css(styles.input)}
-                required
-                maxLength={13}
-                pattern="\d{13}"
-                title={translations.getMessage("isbnTitle")}
-                aria-label={isbnTranslation}
-            />
+            {createForm && (
+                <>
+                    <label htmlFor="isbn" className={css(styles.label)}>{isbnTranslation}:</label>
+                    <input
+                        id="isbn"
+                        type="text"
+                        value={isbn}
+                        onChange={handleIsbnChange}
+                        className={css(styles.input)}
+                        required
+                        maxLength={13}
+                        pattern="\d{13}"
+                        title={translations.getMessage("isbnTitle")}
+                        aria-label={isbnTranslation}
+                    />
+                </>
+            )}
             <label htmlFor="price" className={css(styles.label)}>{bookPrice}:</label>
             <input
                 id="price"
@@ -146,6 +161,7 @@ const BookForm = ({onSubmit, book}: BookFormProps) => {
                     onChange={handleAuthorChange}
                     className={css(styles.select)}
                     aria-label={authorsTranslation}
+                    required
                 >
                     {Object.values(authors).map(author => (
                         <option key={author._id} value={author._id}>{author.name}</option>
