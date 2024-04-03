@@ -5,5 +5,9 @@
   "authors": "Authors",
   "price": "Price",
   "goToBook": "Go to book",
-  "loading": "Loading"
+  "loading": "Loading",
+  "bookForm": "Book form",
+  "isbn": "ISBN",
+  "isbnTitle": "ISBN must be exactly 13 digits",
+  "submit": "Submit"
 }

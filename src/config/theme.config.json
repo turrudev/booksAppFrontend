@@ -18,6 +18,12 @@
     "spinner": {
       "border": "#f3f3f3",
       "borderTop": "#3498db"
+    },
+    "bookForm": {
+      "inputBorderColor": "#CCC",
+      "submitBackground": "#007BFF",
+      "submitBackgroundHover": "#0056b3",
+      "submitText": "#FFF"
     }
   },
   "dark": {
@@ -39,6 +45,12 @@
     "spinner": {
       "border": "#f3f3f3",
       "borderTop": "#3498db"
+    },
+    "bookForm": {
+      "inputBorderColor": "#CCC",
+      "submitBackground": "#007BFF",
+      "submitBackgroundHover": "#0056b3",
+      "submitText": "#FFF"
     }
   }
 }

@@ -9,6 +9,8 @@ import Grid from "../../utils/Grid";
 import {BooksCollection} from "../../models/Book";
 import {AppStateType} from "../../state/reducers/appInitialState";
 import {AuthorsCollection} from "../../models/Author";
+import {useNavigate} from "react-router-dom";
+import {RouterPaths} from "../../pages/Main";
 
 export const BOOKS_TEST_ID = {
     Books: "book-row_"
@@ -61,11 +63,12 @@ const BooksTable = () => {
             }
         }),
         booksReady: boolean = books && Object.keys(books).length > 0,
-        booksMessage: string = translations.getMessage("booksPage");
-
+        booksMessage: string = translations.getMessage("booksPage"),
+        navigate = useNavigate();
 
     const handleGoToBook = (event: React.MouseEvent<HTMLElement> | React.KeyboardEvent<HTMLTableRowElement>, bookId: number): void => {
         if (event.type === "click" || (event.type === "keydown" && (event as React.KeyboardEvent<HTMLTableRowElement>).key === "Enter")) {
+            navigate(RouterPaths.Book.replace(":id", `${bookId}`));
         }
     };
 
@@ -82,7 +85,7 @@ const BooksTable = () => {
                 </thead>
                 <tbody>
                 {Object.values(books).map((book, key) => {
-                    const bookId: number = key;
+                    const bookId: number = parseInt(book._id);
 
                     return (
                         <tr key={bookId} className={css(styles.tr)} onClick={(event) => handleGoToBook(event, bookId)}

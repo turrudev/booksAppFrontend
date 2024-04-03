@@ -16,13 +16,16 @@ import Time from "../utils/Time";
 import {Endpoints} from "../services/restService/AppRestService";
 import Logger from "../utils/Logger";
 import Author, {AuthorsCollection} from "../models/Author";
+import BookForm from "../components/bookForm/BookForm";
 
 type PageLinks = {
     Books: string;
+    Book: string;
 };
 
 export const RouterPaths: PageLinks = {
-    Books: "/books"
+    Books: "/books",
+    Book: "/books/:id",
 };
 
 interface MainProps {
@@ -79,7 +82,8 @@ const Main = ({service}: MainProps) => {
         };
     }, [dispatch, service, ttl]);
 
-    const BooksPage = withDocumentTitle(Books, useContext(TranslationsContext).getMessage('booksPage'));
+    const BooksPage = withDocumentTitle(Books, useContext(TranslationsContext).getMessage('booksPage')),
+        BookFormPage = withDocumentTitle(BookForm, useContext(TranslationsContext).getMessage('bookForm'));
 
     return (
         <div className={css(styles.mainWrapper)}>
@@ -90,6 +94,7 @@ const Main = ({service}: MainProps) => {
                         <Routes>
                             <Route path={RouterPaths.Books} element={<BooksPage/>}>
                             </Route>
+                            <Route path={RouterPaths.Book} element={<BookFormPage onSubmit={() => void (0)}/>}/>
                             <Route path="*" element={<Navigate to={RouterPaths.Books}/>}/>
                         </Routes>
                     </div>
