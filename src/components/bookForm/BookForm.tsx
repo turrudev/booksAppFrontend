@@ -1,24 +1,18 @@
 import React, {useContext, useState} from 'react';
-import {useParams} from 'react-router-dom';
 import {css, StyleSheet} from 'aphrodite';
 import {useSelector} from "react-redux";
 import {AppStateType} from "../../state/reducers/appInitialState";
 import Book from "../../models/Book";
-import {RouterPaths} from "../../pages/Main";
 import {AuthorsCollection} from "../../models/Author";
 import {TranslationsContext} from "../../providers/TranslationProvider";
 import {ThemeContext} from "../../providers/ThemeProvider";
 
 interface BookFormProps {
-    onSubmit: Function
+    onSubmit: Function;
+    book: Book;
 }
 
-const BookForm = ({onSubmit}: BookFormProps) => {
-    const {id} = useParams();
-    const book: Book = useSelector((state: AppStateType) => state.books[id || -1]);
-
-    if (!book) window.location.href = RouterPaths.Books;
-
+const BookForm = ({onSubmit, book}: BookFormProps) => {
     const translations = useContext(TranslationsContext),
         authors: AuthorsCollection = useSelector((state: AppStateType) => state.authors),
         [title, setTitle] = useState(book.title),
@@ -29,56 +23,55 @@ const BookForm = ({onSubmit}: BookFormProps) => {
         bookPrice: string = translations.getMessage("price"),
         isbnTranslation: string = translations.getMessage("isbn"),
         authorsTranslation: string = translations.getMessage("authors"),
-        {theme} = useContext(ThemeContext);
-    console.log(theme);
-    const styles = StyleSheet.create({
-        form: {
-            display: 'flex',
-            flexDirection: 'column',
-            maxWidth: '400px',
-            margin: '10px auto',
-        },
-        label: {
-            marginBottom: '5px',
-            fontSize: '16px',
-        },
-        input: {
-            padding: '10px',
-            marginBottom: '20px',
-            fontSize: '16px',
-            border: `1px solid ${theme.bookForm.inputBorderColor}`,
-            borderRadius: '5px',
-            boxSizing: 'border-box',
-            width: '100%',
-            maxWidth: '100%',
-        },
-        selectContainer: {
-            position: 'relative',
-        },
-        select: {
-            padding: '10px',
-            border: `1px solid ${theme.bookForm.inputBorderColor}`,
-            borderRadius: '5px',
-            boxSizing: 'border-box',
-            width: '100%',
-            maxWidth: '100%',
-            appearance: 'none',
-        },
-        button: {
-            marginTop: 10,
-            padding: '10px',
-            backgroundColor: `${theme.bookForm.submitBackground}`,
-            color: `${theme.bookForm.submitText}`,
-            border: 'none',
-            borderRadius: '5px',
-            cursor: 'pointer',
-            fontSize: '16px',
-            transition: 'background-color 0.3s ease',
-            ':hover': {
-                backgroundColor: `${theme.bookForm.submitBackgroundHover}`,
-            }
-        },
-    });
+        {theme} = useContext(ThemeContext),
+        styles = StyleSheet.create({
+            form: {
+                display: 'flex',
+                flexDirection: 'column',
+                maxWidth: '400px',
+                margin: '10px auto',
+            },
+            label: {
+                marginBottom: '5px',
+                fontSize: '16px',
+            },
+            input: {
+                padding: '10px',
+                marginBottom: '20px',
+                fontSize: '16px',
+                border: `1px solid ${theme.bookForm.inputBorderColor}`,
+                borderRadius: '5px',
+                boxSizing: 'border-box',
+                width: '100%',
+                maxWidth: '100%',
+            },
+            selectContainer: {
+                position: 'relative',
+            },
+            select: {
+                padding: '10px',
+                border: `1px solid ${theme.bookForm.inputBorderColor}`,
+                borderRadius: '5px',
+                boxSizing: 'border-box',
+                width: '100%',
+                maxWidth: '100%',
+                appearance: 'none',
+            },
+            button: {
+                marginTop: 10,
+                padding: '10px',
+                backgroundColor: `${theme.bookForm.submitBackground}`,
+                color: `${theme.bookForm.submitText}`,
+                border: 'none',
+                borderRadius: '5px',
+                cursor: 'pointer',
+                fontSize: '16px',
+                transition: 'background-color 0.3s ease',
+                ':hover': {
+                    backgroundColor: `${theme.bookForm.submitBackgroundHover}`,
+                }
+            },
+        });
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -95,21 +88,18 @@ const BookForm = ({onSubmit}: BookFormProps) => {
 
     const handlePriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const newPrice = e.target.value;
-        if (!newPrice || parseFloat(newPrice) >= 0) {
-            setPrice(newPrice);
-        }
+
+        if (!newPrice || parseFloat(newPrice) >= 0) setPrice(newPrice);
     };
 
     const handleIsbnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const newIsbn = e.target.value;
-        if (!newIsbn || /^\d{0,13}$/.test(newIsbn)) {
-            setIsbn(newIsbn);
-        }
+
+        if (!newIsbn || /^\d{0,13}$/.test(newIsbn)) setIsbn(newIsbn);
     };
 
     const handleAuthorChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        const selectedOptions = Array.from(e.target.selectedOptions, option => option.value);
-        setSelectedAuthors(selectedOptions);
+        setSelectedAuthors(Array.from(e.target.selectedOptions, option => option.value));
     };
 
     return (

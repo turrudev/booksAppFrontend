@@ -16,16 +16,19 @@ import Time from "../utils/Time";
 import {Endpoints} from "../services/restService/AppRestService";
 import Logger from "../utils/Logger";
 import Author, {AuthorsCollection} from "../models/Author";
-import BookForm from "../components/bookForm/BookForm";
+import UpdateBook from "./updateBook/UpdateBook";
+import CreateBook from "./createBook/CreateBook";
 
 type PageLinks = {
     Books: string;
     Book: string;
+    NewBook: string;
 };
 
 export const RouterPaths: PageLinks = {
     Books: "/books",
     Book: "/books/:id",
+    NewBook: "/books/new"
 };
 
 interface MainProps {
@@ -83,7 +86,8 @@ const Main = ({service}: MainProps) => {
     }, [dispatch, service, ttl]);
 
     const BooksPage = withDocumentTitle(Books, useContext(TranslationsContext).getMessage('booksPage')),
-        BookFormPage = withDocumentTitle(BookForm, useContext(TranslationsContext).getMessage('bookForm'));
+        UpdateBookPage = withDocumentTitle(UpdateBook, useContext(TranslationsContext).getMessage('bookForm')),
+        NewBookPage = withDocumentTitle(CreateBook, useContext(TranslationsContext).getMessage('bookForm'));
 
     return (
         <div className={css(styles.mainWrapper)}>
@@ -92,9 +96,9 @@ const Main = ({service}: MainProps) => {
                     <Nav extraStyle={styles.nav}/>
                     <div className={css(styles.pageContent)}>
                         <Routes>
-                            <Route path={RouterPaths.Books} element={<BooksPage/>}>
-                            </Route>
-                            <Route path={RouterPaths.Book} element={<BookFormPage onSubmit={() => void (0)}/>}/>
+                            <Route path={RouterPaths.Books} element={<BooksPage/>}/>
+                            <Route path={RouterPaths.Book} element={<UpdateBookPage onSubmit={() => void (0)}/>}/>
+                            <Route path={RouterPaths.NewBook} element={<NewBookPage onSubmit={() => void (0)}/>}/>
                             <Route path="*" element={<Navigate to={RouterPaths.Books}/>}/>
                         </Routes>
                     </div>

@@ -13,7 +13,9 @@
       "text": "#333333",
       "thBorder": "#EBEBEB",
       "thText": "#828282",
-      "tdBorder": "#828282"
+      "tdBorder": "#828282",
+      "removeButton": "#FF0000",
+      "removeButtonText": "#FFFFFF"
     },
     "spinner": {
       "border": "#f3f3f3",
@@ -40,7 +42,9 @@
       "text": "#333333",
       "thBorder": "#EBEBEB",
       "thText": "#828282",
-      "tdBorder": "#828282"
+      "tdBorder": "#828282",
+      "removeButtonBackground": "#FF0000",
+      "removeButtonText": "#FFFFFF"
     },
     "spinner": {
       "border": "#f3f3f3",

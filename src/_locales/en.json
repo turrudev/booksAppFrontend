@@ -9,5 +9,9 @@
   "bookForm": "Book form",
   "isbn": "ISBN",
   "isbnTitle": "ISBN must be exactly 13 digits",
-  "submit": "Submit"
+  "submit": "Submit",
+  "createBook": "Create Book",
+  "actions": "Actions",
+  "edit": "Edit",
+  "remove": "Remove"
 }

@@ -1,5 +1,6 @@
 import React, {useContext} from 'react';
 import {css, StyleSheet} from 'aphrodite';
+import {useNavigate} from 'react-router-dom';
 import {TranslationsContext} from "../../providers/TranslationProvider";
 import {ThemeContext} from "../../providers/ThemeProvider";
 import MediaQueryUtils from "../../utils/MediaQuery";
@@ -9,7 +10,6 @@ import Grid from "../../utils/Grid";
 import {BooksCollection} from "../../models/Book";
 import {AppStateType} from "../../state/reducers/appInitialState";
 import {AuthorsCollection} from "../../models/Author";
-import {useNavigate} from "react-router-dom";
 import {RouterPaths} from "../../pages/Main";
 
 export const BOOKS_TEST_ID = {
@@ -21,6 +21,7 @@ const BooksTable = () => {
         books: BooksCollection = useSelector((state: AppStateType) => state.books),
         authors: AuthorsCollection = useSelector((state: AppStateType) => state.authors),
         {theme} = useContext(ThemeContext),
+        navigate = useNavigate(),
         styles = StyleSheet.create({
             container: {
                 ...Grid.setRowCol(1, 1),
@@ -60,16 +61,36 @@ const BooksTable = () => {
             },
             tr: {
                 cursor: "pointer"
+            },
+            actionButton: {
+                padding: '8px 16px',
+                margin: '0 4px',
+                borderRadius: '4px',
+                border: 'none',
+                cursor: 'pointer',
+                transition: 'background-color 0.3s ease',
+                ':hover': {
+                    opacity: 0.9,
+                },
+            },
+            removeButton: {
+                backgroundColor: theme.table.removeButtonBackground,
+                color: theme.table.removeButtonText
             }
         }),
         booksReady: boolean = books && Object.keys(books).length > 0,
         booksMessage: string = translations.getMessage("booksPage"),
-        navigate = useNavigate();
+        removeMessage: string = translations.getMessage("remove"),
+        editMessage: string = translations.getMessage("edit");
 
     const handleGoToBook = (event: React.MouseEvent<HTMLElement> | React.KeyboardEvent<HTMLTableRowElement>, bookId: number): void => {
         if (event.type === "click" || (event.type === "keydown" && (event as React.KeyboardEvent<HTMLTableRowElement>).key === "Enter")) {
             navigate(RouterPaths.Book.replace(":id", `${bookId}`));
         }
+    };
+
+    const handleRemoveBook = (event: React.MouseEvent<HTMLButtonElement>, bookId: number): void => {
+        event.stopPropagation();
     };
 
     return (
@@ -80,7 +101,8 @@ const BooksTable = () => {
                 <tr>
                     <th className={css(styles.th)}>{translations.getMessage("bookTitle")}</th>
                     <th className={css(styles.th)}>{translations.getMessage("price")}</th>
-                    <th className={css(styles.th)}>{translations.getMessage("authors")}</th>
+                    <th className={css(styles.th)}>{translations.getMessage("price")}</th>
+                    <th className={css(styles.th)}>{translations.getMessage("actions")}</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -94,6 +116,24 @@ const BooksTable = () => {
                             <td className={css(styles.td)}><b>{book.title}</b></td>
                             <td className={css(styles.td)}>{book.price} €</td>
                             <td className={css(styles.td)}>{book.authors.map(authorId => authors[authorId].name).join(", ")}</td>
+                            <td className={css(styles.td)}>
+                                <button
+                                    className={css(styles.actionButton)}
+                                    onClick={(event) => handleGoToBook(event, bookId)}
+                                    aria-label={editMessage}
+                                    aria-labelledby={`remove-${bookId}`}
+                                >
+                                    {editMessage}
+                                </button>
+                                <button
+                                    className={css(styles.actionButton, styles.removeButton)}
+                                    onClick={(event) => handleRemoveBook(event, bookId)}
+                                    aria-label={removeMessage}
+                                    aria-labelledby={`edit-${bookId}`}
+                                >
+                                    {removeMessage}
+                                </button>
+                            </td>
                         </tr>
                     );
                 })}

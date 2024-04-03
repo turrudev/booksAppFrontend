@@ -57,7 +57,7 @@ const Nav: React.FC<NavProps> = ({extraStyle}) => {
         <nav className={`${css(styles.verticalNavContainer, extraStyle)}`} role="navigation">
             <h3 className={css(styles.title)}>{translations.getMessage("appTitle")}</h3>
             <Link to={RouterPaths.Books} className={css(styles.navItem, activeLinkStyles(RouterPaths.Books))}>{translations.getMessage("booksPage")}</Link>
-            {/*<Link to={RouterPaths.Favorites} className={css(styles.navItem, activeLinkStyles(RouterPaths.Favorites))}>{translations.getMessage("favorites")}</Link>*/}
+            <Link to={RouterPaths.NewBook} className={css(styles.navItem, activeLinkStyles(RouterPaths.NewBook))}>{translations.getMessage("createBook")}</Link>
         </nav>
     );
 };
