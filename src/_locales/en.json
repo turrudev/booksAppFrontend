@@ -1,0 +1,9 @@
+{
+  "appTitle": "Books App",
+  "booksPage": "All books",
+  "bookTitle": "Title",
+  "authors": "Authors",
+  "price": "Price",
+  "goToBook": "Go to book",
+  "loading": "Loading"
+}
