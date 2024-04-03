@@ -57,11 +57,11 @@ const Main = ({service}: MainProps) => {
         const checkTTLAndFetch = async () => {
             if (Time.ttlInvalid(ttl)) {
                 try {
-                    const booksRecord = (await service.readAll(Endpoints.Books.All) as unknown as Book[]).reduce((acc: BooksCollection, book: Book) => {
+                    const booksRecord = (await service.readAll(Endpoints.Books) as unknown as Book[]).reduce((acc: BooksCollection, book: Book) => {
                             acc[book._id] = book;
                             return acc;
                         }, {}),
-                        authorsRecord = (await service.readAll(Endpoints.Authors.All) as unknown as Author[]).reduce((acc: AuthorsCollection, author: Author) => {
+                        authorsRecord = (await service.readAll(Endpoints.Authors) as unknown as Author[]).reduce((acc: AuthorsCollection, author: Author) => {
                             acc[author._id] = author;
                             return acc;
                         }, {});

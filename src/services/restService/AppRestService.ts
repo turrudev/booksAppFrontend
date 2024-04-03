@@ -5,13 +5,9 @@ import Author from "../../models/Author";
 
 const BackendAddress: string = "http://localhost:3000/",
     Endpoints = {
-        Books: {
-            All: "books"
-        },
-        Authors: {
-            All: "authors"
-        }
-    }
+        Books: "books",
+        Authors: "authors"
+    };
 
 export default class AppRestService implements CRUD<Book | Author> {
     async readAll(resource?: string): Promise<Book[] | Author[]> {
@@ -38,7 +34,20 @@ export default class AppRestService implements CRUD<Book | Author> {
     }
 
     delete(id: string): Promise<boolean> {
-        return Promise.resolve(false);
+        return new Promise<boolean>(async (resolve, reject) => {
+            try {
+                const response = await fetch(`${BackendAddress}${Endpoints.Books}/${id}`, {
+                    method: 'DELETE'
+                });
+
+                if (!response.ok) throw new Error('Failed to delete book');
+
+                resolve(true);
+            } catch (error) {
+                Logger.logError('Error deleting book:', error);
+                resolve(false);
+            }
+        });
     }
 
     update(id: string, item: Partial<Book>): Promise<Book | undefined> {

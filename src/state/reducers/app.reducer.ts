@@ -9,6 +9,7 @@ export interface AppActionType {
     books?: BooksCollection;
     authors?: AuthorsCollection;
     ttl?: number;
+    bookId?: number;
 }
 
 const AppReducer = (state: AppStateType = Storage.getState() || AppInitialState, action: AppActionType): AppStateType => {
@@ -30,6 +31,14 @@ const AppReducer = (state: AppStateType = Storage.getState() || AppInitialState,
                     ...action.authors
                 },
                 ttl: action.ttl!
+            };
+        case AppActions.DELETE_BOOK:
+            const newBooks = {...state.books};
+            delete newBooks[action.bookId!];
+
+            return {
+                ...state,
+                books: newBooks
             };
         default:
             return state;

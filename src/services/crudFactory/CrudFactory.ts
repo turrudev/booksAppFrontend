@@ -14,3 +14,11 @@ export const CrudFactory = <T extends Book>(type: string): CRUD<T> => {
             throw new Error(`Unknown CRUD service type: ${type}`);
     }
 };
+
+export const getCrudInstance = <T extends Book>(): CRUD<T> => {
+    if (!instance) {
+        throw new Error("No CRUD instance created yet.");
+    }
+
+    return instance as CRUD<T>;
+};

@@ -4,13 +4,14 @@ import {useNavigate} from 'react-router-dom';
 import {TranslationsContext} from "../../providers/TranslationProvider";
 import {ThemeContext} from "../../providers/ThemeProvider";
 import MediaQueryUtils from "../../utils/MediaQuery";
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import Loader from "../loader/Loader";
 import Grid from "../../utils/Grid";
 import {BooksCollection} from "../../models/Book";
 import {AppStateType} from "../../state/reducers/appInitialState";
 import {AuthorsCollection} from "../../models/Author";
 import {RouterPaths} from "../../pages/Main";
+import AppCreator from "../../state/creators/app.creator";
 
 export const BOOKS_TEST_ID = {
     Books: "book-row_"
@@ -22,6 +23,7 @@ const BooksTable = () => {
         authors: AuthorsCollection = useSelector((state: AppStateType) => state.authors),
         {theme} = useContext(ThemeContext),
         navigate = useNavigate(),
+        dispatch = useDispatch(),
         styles = StyleSheet.create({
             container: {
                 ...Grid.setRowCol(1, 1),
@@ -91,6 +93,7 @@ const BooksTable = () => {
 
     const handleRemoveBook = (event: React.MouseEvent<HTMLButtonElement>, bookId: number): void => {
         event.stopPropagation();
+        dispatch(AppCreator.deleteBookRequest(bookId));
     };
 
     return (
