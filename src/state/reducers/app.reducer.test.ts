@@ -1,7 +1,7 @@
 import AppActions from '../actions/app.actions';
 import AppReducer, {AppActionType} from "./app.reducer";
 import appInitialState, {AppStateType} from "./appInitialState";
-import RequestError from "../../models/RequestError";
+import RequestError, {errorToRequestError} from "../../models/RequestError";
 
 describe('AppReducer', () => {
     const initialState: AppStateType = {
@@ -75,7 +75,7 @@ describe('AppReducer', () => {
 
         testCases.forEach(({name, action, expectedState}) => {
             it(name, () => {
-                expect(AppReducer(initialState, action as AppActionType)).toEqual(expectedState);
+                expect(AppReducer(initialState, action as unknown as AppActionType)).toEqual(expectedState);
             });
         });
     });
@@ -141,7 +141,7 @@ describe('AppReducer', () => {
 
         testCases.forEach(({name, action, expectedState}) => {
             it(name, () => {
-                expect(AppReducer(initialState, action as AppActionType)).toEqual(expectedState);
+                expect(AppReducer(initialState, action as unknown as AppActionType)).toEqual(expectedState);
             });
         });
     });
@@ -175,7 +175,7 @@ describe('AppReducer', () => {
 
         testCases.forEach(({name, action, expectedState}) => {
             it(name, () => {
-                expect(AppReducer(initialState, action as AppActionType)).toEqual(expectedState);
+                expect(AppReducer(initialState, action as unknown as AppActionType)).toEqual(expectedState);
             });
         });
     });
@@ -226,13 +226,13 @@ describe('AppReducer', () => {
                 action: {
                     type: AppActions.ADD_ERROR,
                     requestId: 'request3',
-                    error: {code: 403, message: 'Forbidden'} as RequestError
+                    error: errorToRequestError('Forbidden')
                 },
                 expectedState: {
                     ...initialState,
                     errors: {
                         ...initialState.errors,
-                        'request3': {code: 403, message: 'Forbidden'}
+                        'request3': ['Forbidden']
                     }
                 }
             },
@@ -241,13 +241,13 @@ describe('AppReducer', () => {
                 action: {
                     type: AppActions.ADD_ERROR,
                     requestId: 'request2',
-                    error: {code: 401, message: 'Unauthorized'} as RequestError
+                    error: errorToRequestError('Unauthorized')
                 },
                 expectedState: {
                     ...initialState,
                     errors: {
                         ...initialState.errors,
-                        'request2': {code: 401, message: 'Unauthorized'}
+                        'request2': ['Unauthorized']
                     }
                 }
             }
