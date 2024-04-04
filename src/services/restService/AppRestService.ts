@@ -3,7 +3,7 @@ import Book from "../../models/Book";
 import Logger from "../../utils/Logger";
 import Author from "../../models/Author";
 
-const BackendAddress: string = "http://localhost:3000/",
+const BackendAddress: string = process.env.REACT_APP_BACKEND_ADDRESS || "http://localhost:3000/",
     Endpoints = {
         Books: "books",
         Authors: "authors"
