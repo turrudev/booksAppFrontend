@@ -14,7 +14,7 @@
       "thBorder": "#EBEBEB",
       "thText": "#828282",
       "tdBorder": "#828282",
-      "removeButton": "#FF0000",
+      "removeButtonBackground": "#FF0000",
       "removeButtonText": "#FFFFFF"
     },
     "spinner": {
@@ -26,6 +26,10 @@
       "submitBackground": "#007BFF",
       "submitBackgroundHover": "#0056b3",
       "submitText": "#FFF"
+    },
+    "errors": {
+      "backgroundColor": "#F8D7DA",
+      "text": "#721C24"
     }
   },
   "dark": {
@@ -55,6 +59,10 @@
       "submitBackground": "#007BFF",
       "submitBackgroundHover": "#0056b3",
       "submitText": "#FFF"
+    },
+    "errors": {
+      "backgroundColor": "#F8D7DA",
+      "text": "#721C24"
     }
   }
 }

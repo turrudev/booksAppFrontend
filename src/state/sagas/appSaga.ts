@@ -6,6 +6,7 @@ import {getCrudInstance} from "../../services/crudFactory/CrudFactory";
 import appCreator from "../creators/app.creator";
 import Logger from "../../utils/Logger";
 import Book from "../../models/Book";
+import {errorToRequestError} from "../../models/RequestError";
 
 function* updateStateLocalStorage() {
     yield call(Storage.saveState, yield select());
@@ -24,19 +25,18 @@ function* createBook(action: AppActionType): Generator<any, void, Book> {
     try {
         const book: Book = yield call(getCrudInstance().create, action.book!);
         if (book) yield put(appCreator.createBook(book));
-    } catch (e) {
-        Logger.logError(e);
+    } catch (e: any) {
+        yield put(appCreator.addError(errorToRequestError(e), action.requestId!));
     }
 }
 
 function* updateBook(action: AppActionType): Generator<any, void, Book> {
-
     try {
         const {_id, ...bookDataWithoutId} = action.book!;
         const book: Book = yield call(getCrudInstance().update, _id!, bookDataWithoutId);
         if (book) yield put(appCreator.updateBook(book));
-    } catch (e) {
-        Logger.logError(e);
+    } catch (e: any) {
+        yield put(appCreator.addError(errorToRequestError(e), action.requestId!));
     }
 }
 

@@ -1,175 +1,188 @@
 import React, {useContext, useEffect, useState} from 'react';
 import {css, StyleSheet} from 'aphrodite';
-import {useSelector} from "react-redux";
-import {AppStateType} from "../../state/reducers/appInitialState";
-import Book, {BooksCollection} from "../../models/Book";
-import {AuthorsCollection} from "../../models/Author";
-import {TranslationsContext} from "../../providers/TranslationProvider";
-import {ThemeContext} from "../../providers/ThemeProvider";
+import {useSelector} from 'react-redux';
+import {AppStateType} from '../../state/reducers/appInitialState';
+import Book, {getEmptyBook} from '../../models/Book';
+import {AuthorsCollection} from '../../models/Author';
+import {TranslationsContext} from '../../providers/TranslationProvider';
+import {ThemeContext} from '../../providers/ThemeProvider';
+import {RequestErrorCollection} from "../../models/RequestError";
 
 interface BookFormProps {
     onSubmit: Function;
     book: Book;
     createForm: boolean;
+    requestId: string;
 }
 
-const BookForm = ({onSubmit, book, createForm}: BookFormProps) => {
+const BookForm = ({onSubmit, book, createForm, requestId}: BookFormProps) => {
     const translations = useContext(TranslationsContext),
         authors: AuthorsCollection = useSelector((state: AppStateType) => state.authors),
-        [title, setTitle] = useState(book.title),
-        [isbn, setIsbn] = useState(book._id),
-        [price, setPrice] = useState(book.price.toString()),
-        [selectedAuthors, setSelectedAuthors] = useState<string[]>(book.authors),
-        bookTitle: string = translations.getMessage("bookTitle"),
-        bookPrice: string = translations.getMessage("price"),
-        isbnTranslation: string = translations.getMessage("isbn"),
-        authorsTranslation: string = translations.getMessage("authors"),
+        errors: RequestErrorCollection = useSelector((state: AppStateType) => state.errors),
         {theme} = useContext(ThemeContext),
+        [bookFormData, setBookFormData] = useState({
+            title: book.title,
+            _id: book._id,
+            price: book.price,
+            authors: book.authors
+        }),
         styles = StyleSheet.create({
             form: {
-                display: 'flex',
-                flexDirection: 'column',
-                maxWidth: '400px',
+                maxWidth: 400,
                 margin: '10px auto',
+                display: 'flex',
+                flexDirection: 'column'
             },
             label: {
-                marginBottom: '5px',
-                fontSize: '16px',
+                marginBottom: 5,
+                fontSize: 16
             },
             input: {
-                padding: '10px',
-                marginBottom: '20px',
-                fontSize: '16px',
                 border: `1px solid ${theme.bookForm.inputBorderColor}`,
-                borderRadius: '5px',
+                padding: 10,
+                marginBottom: 20,
+                fontSize: 16,
+                borderRadius: 5,
                 boxSizing: 'border-box',
                 width: '100%',
-                maxWidth: '100%',
-            },
-            selectContainer: {
-                position: 'relative',
-            },
-            select: {
-                padding: '10px',
-                border: `1px solid ${theme.bookForm.inputBorderColor}`,
-                borderRadius: '5px',
-                boxSizing: 'border-box',
-                width: '100%',
-                maxWidth: '100%',
-                appearance: 'none',
+                maxWidth: '100%'
             },
             button: {
                 marginTop: 10,
-                padding: '10px',
+                padding: 10,
                 backgroundColor: `${theme.bookForm.submitBackground}`,
                 color: `${theme.bookForm.submitText}`,
+                fontSize: 16,
                 border: 'none',
-                borderRadius: '5px',
+                borderRadius: 5,
                 cursor: 'pointer',
-                fontSize: '16px',
                 transition: 'background-color 0.3s ease',
                 ':hover': {
                     backgroundColor: `${theme.bookForm.submitBackgroundHover}`,
-                }
+                },
             },
-        }),
-        books: BooksCollection = useSelector((state: AppStateType) => state.books);
+            errors: {
+                backgroundColor: theme.errors.backgroundColor,
+                color: theme.errors.text,
+                maxWidth: 400,
+                marginTop: 10,
+                padding: 10,
+                borderRadius: 5,
+                margin: "0 auto"
+            }
+        });
 
     useEffect(() => {
-        if (createForm && books[isbn]) {
-            setTitle("");
-            setIsbn("");
-            setPrice("");
-            setSelectedAuthors([]);
+        if (createForm) setBookFormData(getEmptyBook());
+    }, [requestId, createForm]);
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+        const {name, value} = e.target;
+
+        let selectedValues: string[] = [];
+
+        if (e.target instanceof HTMLSelectElement) {
+            const selectElement = e.target as HTMLSelectElement;
+
+            selectedValues = Array.from(selectElement.selectedOptions).map(
+                (option) => option.value
+            );
         }
-    }, [books, isbn, createForm]);
+
+        setBookFormData({
+            ...bookFormData,
+            [name]: selectedValues.length ? selectedValues : value
+        });
+    };
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-
-        const bookData = {
-            title,
-            _id: isbn,
-            price: parseFloat(price),
-            authors: selectedAuthors
-        };
-
-        onSubmit(bookData);
-    };
-
-    const handlePriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const newPrice = e.target.value;
-
-        if (!newPrice || parseFloat(newPrice) > 0) setPrice(newPrice);
-    };
-
-    const handleIsbnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const newIsbn = e.target.value;
-
-        if (!newIsbn || /^\d{0,13}$/.test(newIsbn)) setIsbn(newIsbn);
-    };
-
-    const handleAuthorChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        setSelectedAuthors(Array.from(e.target.selectedOptions, option => option.value));
+        onSubmit(bookFormData);
     };
 
     return (
-        <form onSubmit={handleSubmit} className={css(styles.form)}>
-            <label htmlFor="title" className={css(styles.label)}>{bookTitle}</label>
-            <input
-                id="title"
-                type="text"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                className={css(styles.input)}
-                required
-                aria-label={bookTitle}
-            />
-            {createForm && (
-                <>
-                    <label htmlFor="isbn" className={css(styles.label)}>{isbnTranslation}:</label>
-                    <input
-                        id="isbn"
-                        type="text"
-                        value={isbn}
-                        onChange={handleIsbnChange}
-                        className={css(styles.input)}
-                        required
-                        maxLength={13}
-                        pattern="\d{13}"
-                        title={translations.getMessage("isbnTitle")}
-                        aria-label={isbnTranslation}
-                    />
-                </>
-            )}
-            <label htmlFor="price" className={css(styles.label)}>{bookPrice}:</label>
-            <input
-                id="price"
-                type="number"
-                value={price}
-                onChange={handlePriceChange}
-                className={css(styles.input)}
-                required
-                aria-label={bookPrice}
-            />
-            <label htmlFor="authors" className={css(styles.label)}>{authorsTranslation}:</label>
-            <div className={css(styles.selectContainer)}>
+        <React.Fragment>
+            <form onSubmit={handleSubmit} className={css(styles.form)}>
+                <label htmlFor="title" className={css(styles.label)}>
+                    {translations.getMessage('bookTitle')}
+                </label>
+                <input
+                    id="title"
+                    type="text"
+                    name="title"
+                    value={bookFormData.title}
+                    onChange={handleChange}
+                    className={css(styles.input)}
+                    required
+                    aria-label={translations.getMessage('bookTitle')}
+                />
+                {createForm && (
+                    <>
+                        <label htmlFor="isbn" className={css(styles.label)}>
+                            {translations.getMessage('isbn')}:
+                        </label>
+                        <input
+                            id="isbn"
+                            type="text"
+                            name="_id"
+                            value={bookFormData._id}
+                            onChange={handleChange}
+                            className={css(styles.input)}
+                            required
+                            maxLength={13}
+                            pattern="\d{13}"
+                            title={translations.getMessage('isbnTitle')}
+                            aria-label={translations.getMessage('isbn')}
+                        />
+                    </>
+                )}
+                <label htmlFor="price" className={css(styles.label)}>
+                    {translations.getMessage('price')}
+                </label>
+                <input
+                    id="price"
+                    type="number"
+                    name="price"
+                    value={bookFormData.price}
+                    onChange={handleChange}
+                    className={css(styles.input)}
+                    required
+                    aria-label={translations.getMessage('price')}
+                />
+                <label htmlFor="authors" className={css(styles.label)}>
+                    {translations.getMessage('authors')}
+                </label>
                 <select
                     id="authors"
+                    name="authors"
                     multiple
-                    value={selectedAuthors}
-                    onChange={handleAuthorChange}
-                    className={css(styles.select)}
-                    aria-label={authorsTranslation}
+                    value={bookFormData.authors}
+                    onChange={handleChange}
+                    className={css(styles.input)}
+                    aria-label={translations.getMessage('authors')}
                     required
                 >
-                    {Object.values(authors).map(author => (
-                        <option key={author._id} value={author._id}>{author.name}</option>
+                    {Object.values(authors).map((author) => (
+                        <option key={author._id} value={author._id}>
+                            {author.name}
+                        </option>
                     ))}
                 </select>
-            </div>
-            <button type="submit" className={css(styles.button)}>{translations.getMessage("submit")}</button>
-        </form>
+                <button type="submit" className={css(styles.button)}>
+                    {translations.getMessage('submit')}
+                </button>
+            </form>
+            {errors[requestId] &&
+                <div className={css(styles.errors)}>
+                    {errors[requestId].map((error, index) => (
+                        <React.Fragment key={index}>
+                            {error}
+                            <br/>
+                        </React.Fragment>
+                    ))}
+                </div>
+            }
+        </React.Fragment>
     );
 };
 

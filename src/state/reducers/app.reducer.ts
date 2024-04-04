@@ -3,6 +3,7 @@ import AppActions from "../actions/app.actions";
 import Book, {BooksCollection} from "../../models/Book";
 import Storage from "../../utils/Storage";
 import {AuthorsCollection} from "../../models/Author";
+import RequestError from "../../models/RequestError";
 
 export interface AppActionType {
     type: typeof AppActions[keyof typeof AppActions];
@@ -11,6 +12,8 @@ export interface AppActionType {
     ttl?: number;
     bookId?: number;
     book?: Book;
+    error?: RequestError;
+    requestId?: string;
 }
 
 const AppReducer = (state: AppStateType = Storage.getState() || AppInitialState, action: AppActionType): AppStateType => {
@@ -50,6 +53,14 @@ const AppReducer = (state: AppStateType = Storage.getState() || AppInitialState,
                 books: {
                     ...state.books,
                     [book._id]: book
+                }
+            };
+        case AppActions.ADD_ERROR:
+            return {
+                ...state,
+                errors: {
+                    ...state.errors,
+                    [action.requestId!]: action.error!
                 }
             };
         default:

@@ -27,7 +27,6 @@ export default class AppRestService implements CRUD<Book | Author> {
         return "rest";
     }
 
-
     async create(item: Partial<Book>): Promise<Book> {
         try {
             const response = await fetch(`${BackendAddress}${Endpoints.Books}`, {
@@ -76,7 +75,10 @@ export default class AppRestService implements CRUD<Book | Author> {
 
             if (!response.ok) throw new Error('Failed to update book');
 
-            return await response.json();
+            // After the update, mongo adds a __v property
+            const {__v, ...itemWithoutV} = await response.json();
+
+            return itemWithoutV as Book;
         } catch (error) {
             Logger.logError('Error updating book:', error);
             throw error;

@@ -6,7 +6,8 @@ const AppActions = {
     CREATE_BOOK_REQUEST: "app:CREATE_BOOK_REQUEST",
     CREATE_BOOK: "app:CREATE_BOOK",
     UPDATE_BOOK_REQUEST: "app:UPDATE_BOOK_REQUEST",
-    UPDATE_BOOK: "app:UPDATE_BOOK"
+    UPDATE_BOOK: "app:UPDATE_BOOK",
+    ADD_ERROR: "app:ADD_ERROR"
 };
 
 export default AppActions;
