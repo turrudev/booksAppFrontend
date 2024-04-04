@@ -25,7 +25,8 @@
       "inputBorderColor": "#CCC",
       "submitBackground": "#007BFF",
       "submitBackgroundHover": "#0056b3",
-      "submitText": "#FFF"
+      "submitText": "#FFF",
+      "error": "red"
     },
     "errors": {
       "backgroundColor": "#F8D7DA",
@@ -58,7 +59,8 @@
       "inputBorderColor": "#CCC",
       "submitBackground": "#007BFF",
       "submitBackgroundHover": "#0056b3",
-      "submitText": "#FFF"
+      "submitText": "#FFF",
+      "error": "red"
     },
     "errors": {
       "backgroundColor": "#F8D7DA",

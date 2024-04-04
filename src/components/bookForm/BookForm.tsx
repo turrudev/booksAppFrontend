@@ -2,7 +2,7 @@ import React, {useContext, useEffect, useState} from 'react';
 import {css, StyleSheet} from 'aphrodite';
 import {useSelector} from 'react-redux';
 import {AppStateType} from '../../state/reducers/appInitialState';
-import Book, {getEmptyBook} from '../../models/Book';
+import Book, {BooksCollection, getEmptyBook} from '../../models/Book';
 import {AuthorsCollection} from '../../models/Author';
 import {TranslationsContext} from '../../providers/TranslationProvider';
 import {ThemeContext} from '../../providers/ThemeProvider';
@@ -20,12 +20,14 @@ const BookForm = ({onSubmit, book, createForm, requestId}: BookFormProps) => {
         authors: AuthorsCollection = useSelector((state: AppStateType) => state.authors),
         errors: RequestErrorCollection = useSelector((state: AppStateType) => state.errors),
         {theme} = useContext(ThemeContext),
+        books: BooksCollection = useSelector((state: AppStateType) => state.books),
         [bookFormData, setBookFormData] = useState({
             title: book.title,
             _id: book._id,
             price: book.price,
             authors: book.authors
         }),
+        isbnDuplicated: boolean = createForm && !!books[bookFormData._id],
         styles = StyleSheet.create({
             form: {
                 maxWidth: 400,
@@ -69,7 +71,11 @@ const BookForm = ({onSubmit, book, createForm, requestId}: BookFormProps) => {
                 padding: 10,
                 borderRadius: 5,
                 margin: "0 auto"
-            }
+            },
+            isbn: isbnDuplicated ? {
+                textDecoration: "underline",
+                color: theme.bookForm.error
+            } : {}
         });
 
     useEffect(() => {
@@ -97,7 +103,7 @@ const BookForm = ({onSubmit, book, createForm, requestId}: BookFormProps) => {
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        onSubmit(bookFormData);
+        if (!isbnDuplicated) onSubmit(bookFormData);
     };
 
     return (
@@ -118,7 +124,7 @@ const BookForm = ({onSubmit, book, createForm, requestId}: BookFormProps) => {
                 />
                 {createForm && (
                     <>
-                        <label htmlFor="isbn" className={css(styles.label)}>
+                        <label htmlFor="isbn" className={css(styles.label, styles.isbn)}>
                             {translations.getMessage('isbn')}:
                         </label>
                         <input
