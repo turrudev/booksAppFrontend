@@ -144,4 +144,38 @@ describe('AppReducer', () => {
             });
         });
     });
+
+    describe('DELETE_BOOK action', () => {
+        const testCases = [
+            {
+                name: 'should delete a book from the state',
+                action: {
+                    type: AppActions.DELETE_BOOK,
+                    bookId: '1'
+                },
+                expectedState: {
+                    ...initialState,
+                    books: {
+                        '2': {_id: '2', title: 'Initial Book 2', authors: ['author2'], price: 20}
+                    }
+                }
+            },
+            {
+                name: 'should not modify state if book ID does not exist',
+                action: {
+                    type: AppActions.DELETE_BOOK,
+                    bookId: '3'
+                },
+                expectedState: {
+                    ...initialState
+                }
+            }
+        ];
+
+        testCases.forEach(({name, action, expectedState}) => {
+            it(name, () => {
+                expect(AppReducer(initialState, action as AppActionType)).toEqual(expectedState);
+            });
+        });
+    });
 });
