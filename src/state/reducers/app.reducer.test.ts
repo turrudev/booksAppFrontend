@@ -78,4 +78,70 @@ describe('AppReducer', () => {
             });
         });
     });
+
+    describe('SET_AUTHORS action', () => {
+        const testCases = [
+            {
+                name: 'should set authors with an empty initial state',
+                action: {
+                    type: AppActions.SET_AUTHORS,
+                    authors: {
+                        'author3': {_id: 'author3', name: 'Author 3'},
+                        'author4': {_id: 'author4', name: 'Author 4'}
+                    },
+                    ttl: 100
+                },
+                expectedState: {
+                    ...initialState,
+                    authors: {
+                        'author3': {_id: 'author3', name: 'Author 3'},
+                        'author4': {_id: 'author4', name: 'Author 4'}
+                    },
+                    ttl: 100
+                }
+            },
+            {
+                name: 'should overwrite existing authors with new ones',
+                action: {
+                    type: AppActions.SET_AUTHORS,
+                    authors: {
+                        'author1': {_id: 'author1', name: 'Author 1 Overwritten'},
+                        'author2': {_id: 'author2', name: 'Author 2 Overwritten'}
+                    },
+                    ttl: 200
+                },
+                expectedState: {
+                    ...initialState,
+                    authors: {
+                        'author1': {_id: 'author1', name: 'Author 1 Overwritten'},
+                        'author2': {_id: 'author2', name: 'Author 2 Overwritten'}
+                    },
+                    ttl: 200
+                }
+            },
+            {
+                name: 'should update TTL value when setting authors',
+                action: {
+                    type: AppActions.SET_AUTHORS,
+                    authors: {
+                        'author5': {_id: 'author5', name: 'Author 5'}
+                    },
+                    ttl: 300
+                },
+                expectedState: {
+                    ...initialState,
+                    authors: {
+                        'author5': {_id: 'author5', name: 'Author 5'}
+                    },
+                    ttl: 300
+                }
+            }
+        ];
+
+        testCases.forEach(({name, action, expectedState}) => {
+            it(name, () => {
+                expect(AppReducer(initialState, action as AppActionType)).toEqual(expectedState);
+            });
+        });
+    });
 });
