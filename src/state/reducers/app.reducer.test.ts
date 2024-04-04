@@ -178,4 +178,43 @@ describe('AppReducer', () => {
             });
         });
     });
+
+    describe('CREATE_BOOK and UPDATE_BOOK actions', () => {
+        const testCases = [
+            {
+                name: 'should create a new book in the state',
+                action: {
+                    type: AppActions.CREATE_BOOK,
+                    book: {_id: '3', title: 'New Book', authors: ['author3'], price: 30} // New book data
+                },
+                expectedState: {
+                    ...initialState,
+                    books: {
+                        ...initialState.books,
+                        '3': {_id: '3', title: 'New Book', authors: ['author3'], price: 30}
+                    }
+                }
+            },
+            {
+                name: 'should update an existing book in the state',
+                action: {
+                    type: AppActions.UPDATE_BOOK,
+                    book: {_id: '2', title: 'Updated Book', authors: ['author2', 'author3'], price: 25} // Updated book data
+                },
+                expectedState: {
+                    ...initialState,
+                    books: {
+                        ...initialState.books,
+                        '2': {_id: '2', title: 'Updated Book', authors: ['author2', 'author3'], price: 25}
+                    }
+                }
+            }
+        ];
+
+        testCases.forEach(({name, action, expectedState}) => {
+            it(name, () => {
+                expect(AppReducer(initialState, action as AppActionType)).toEqual(expectedState);
+            });
+        });
+    });
 });
