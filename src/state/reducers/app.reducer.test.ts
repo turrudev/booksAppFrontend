@@ -1,6 +1,7 @@
 import AppActions from '../actions/app.actions';
 import AppReducer, {AppActionType} from "./app.reducer";
 import appInitialState, {AppStateType} from "./appInitialState";
+import RequestError from "../../models/RequestError";
 
 describe('AppReducer', () => {
     const initialState: AppStateType = {
@@ -206,6 +207,47 @@ describe('AppReducer', () => {
                     books: {
                         ...initialState.books,
                         '2': {_id: '2', title: 'Updated Book', authors: ['author2', 'author3'], price: 25}
+                    }
+                }
+            }
+        ];
+
+        testCases.forEach(({name, action, expectedState}) => {
+            it(name, () => {
+                expect(AppReducer(initialState, action as AppActionType)).toEqual(expectedState);
+            });
+        });
+    });
+
+    describe('ADD_ERROR action', () => {
+        const testCases = [
+            {
+                name: 'should add a new error to the state',
+                action: {
+                    type: AppActions.ADD_ERROR,
+                    requestId: 'request3',
+                    error: {code: 403, message: 'Forbidden'} as RequestError
+                },
+                expectedState: {
+                    ...initialState,
+                    errors: {
+                        ...initialState.errors,
+                        'request3': {code: 403, message: 'Forbidden'}
+                    }
+                }
+            },
+            {
+                name: 'should overwrite an existing error in the state',
+                action: {
+                    type: AppActions.ADD_ERROR,
+                    requestId: 'request2',
+                    error: {code: 401, message: 'Unauthorized'} as RequestError
+                },
+                expectedState: {
+                    ...initialState,
+                    errors: {
+                        ...initialState.errors,
+                        'request2': {code: 401, message: 'Unauthorized'}
                     }
                 }
             }
